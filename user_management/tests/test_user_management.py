@@ -6,16 +6,22 @@ from rest_framework.test import APIClient
 
 
 @pytest.fixture(scope="class")
-def client(django_db_setup, django_db_blocker, request):
+def user(django_db_setup, django_db_blocker):
     with django_db_blocker.unblock():
         user = User.objects.create_user(username="testuser", email="testuser@test.com")
         user.save()
+        return user
+
+
+@pytest.fixture(scope="class")
+def authenticated_client(django_db_setup, django_db_blocker, request, user):
+    with django_db_blocker.unblock():
         client = APIClient()
         client.force_authenticate(user)
         request.cls.client = client
 
 
-@pytest.mark.usefixtures("client")
+@pytest.mark.usefixtures("authenticated_client")
 class TestUserManagement:
     @pytest.mark.django_db
     def test_import_files_to_db(self):
