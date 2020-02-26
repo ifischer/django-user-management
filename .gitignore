@@ -1,0 +1,27 @@
+# Misc
+*.swp
+**/.idea/*
+.DS_Store
+*.log
+dist/
+build/
+
+# Python
+*.egg-info
+.pytest_cache
+*.pyc
+.venv
+.mypy_cache
+
+# SQLite DB
+db.sqlite
+
+# Virtualenv dirs
+venv
+
+# Coverage
+.coverage
+
+# Generated static files
+static/
+
