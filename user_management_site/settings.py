@@ -17,6 +17,8 @@ INSTALLED_APPS = [
     "rest_framework",
     "user_management",
 ]
+if DEBUG:
+    INSTALLED_APPS = INSTALLED_APPS + ["django_extensions"]
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",

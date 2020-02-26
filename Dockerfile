@@ -1,12 +1,14 @@
-FROM python:3.8.1-slim
+FROM python:3.7.6-slim
 
 WORKDIR /app
 
 COPY requirements.txt ./
 COPY requirements-test.txt ./
+COPY requirements-dev.txt ./
 
 RUN pip install -r requirements.txt
 RUN pip install -r requirements-test.txt
+RUN pip install -r requirements-dev.txt
 
 COPY . .
 

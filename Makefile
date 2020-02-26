@@ -1,7 +1,7 @@
 DOCKER_NAME = user-management
 DOCKER_VOLUMES = -v $(PWD):/app
 DOCKER_PORTS = -p 8000:8000
-DOCKER_WO_PORTS = docker run $(ENV_FILES) $(DOCKER_VOLUMES) -it --rm $(DOCKER_NAME)
+DOCKER_WO_PORTS = docker run $(ENV_FILES) $(DOCKER_VOLUMES) -e DJANGO_SETTINGS_MODULE=user_management_site.settings -it --rm $(DOCKER_NAME)
 DOCKER_W_PORTS  = docker run $(ENV_FILES) $(DOCKER_VOLUMES) -it --rm $(DOCKER_PORTS) $(DOCKER_NAME)
 
 build:
