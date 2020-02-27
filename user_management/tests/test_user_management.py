@@ -1,7 +1,6 @@
 import pytest
 from django.contrib.auth.models import User
 from django.urls import reverse
-
 from rest_framework.test import APIClient
 
 
@@ -30,10 +29,12 @@ class TestUserManagement:
         assert response.status_code == 200
 
     @pytest.mark.django_db
-    def test_add_user(self):
+    @pytest.mark.parametrize(
+        "username,email",
+        [("testuser1", "testemail1@test.de"), ("testuser2", "testemail2@test.de")],
+    )
+    def test_add_user(self, username, email):
         url = reverse(viewname="users")
-        response = self.client.post(
-            url, data={"username": "testuser", "email": "foo@bar.de"}
-        )
+        response = self.client.post(url, data={"username": username, "email": email})
         assert response.status_code == 200
         assert User.objects.exists()
