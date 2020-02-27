@@ -24,7 +24,7 @@ def authenticated_client(django_db_setup, django_db_blocker, request, user):
 @pytest.mark.usefixtures("authenticated_client")
 class TestUserManagement:
     @pytest.mark.django_db
-    def test_import_files_to_db(self):
+    def test_get_users(self):
         url = reverse(viewname="users")
         response = self.client.get(url)
         assert response.status_code == 200
