@@ -3,3 +3,5 @@ Django==3.0.2
 djangorestframework==3.11.0
 gunicorn==19.9.0
 pyyaml==5.3
+responses==0.10.14
+requests==2.23.0

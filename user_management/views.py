@@ -1,17 +1,33 @@
-from django.contrib.auth.models import User
+import functools
 
-from rest_framework.generics import ListAPIView, CreateAPIView
-from rest_framework.response import Response
+import requests
+from django.conf import settings
+from django.http import HttpResponse
 
-from user_management.serializers import UserSerializer
+import responses
+from user_management.models import RequestMock
 
 
-class UserView(ListAPIView, CreateAPIView):
-    queryset = User.objects.all()
-    serializer_class = UserSerializer
+def mockable(func):
+    @functools.wraps(func)
+    def wrapper(*args, **kwargs):
+        if not settings.DEBUG:
+            return func(*args, **kwargs)
+        with responses.RequestsMock() as rsps:
+            for mock in RequestMock.objects.all():
+                rsps.add(
+                    method=mock.method,
+                    url=mock.url,
+                    body=mock.body,
+                    status=mock.status,
+                    content_type=mock.content_type,
+                )
+            return func(*args, **kwargs)
 
-    def create(self, request, *args, **kwargs):
-        serializer = UserSerializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        self.perform_create(serializer)
-        return Response(serializer.data)
+    return wrapper
+
+
+@mockable
+def api_call(request):
+    content = requests.get("http://sennder.com")
+    return HttpResponse(content)
