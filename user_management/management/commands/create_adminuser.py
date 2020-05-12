@@ -8,7 +8,7 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         if not User.objects.filter(username="admin").exists():
             u = User(username="admin")
-            u.set_password("adminadmin")
+            u.set_password("admin")
             u.is_superuser = True
             u.is_staff = True
             u.save()

@@ -4,6 +4,8 @@ DOCKER_PORTS = -p 8000:8000
 DOCKER_WO_PORTS = docker run $(ENV_FILES) $(DOCKER_VOLUMES) -e DJANGO_SETTINGS_MODULE=user_management_site.settings -it --rm $(DOCKER_NAME)
 DOCKER_W_PORTS  = docker run $(ENV_FILES) $(DOCKER_VOLUMES) -it --rm $(DOCKER_PORTS) $(DOCKER_NAME)
 
+VIRTUALENV_NAME = .venv
+
 build:
 	docker build -t $(DOCKER_NAME) .
 
@@ -17,13 +19,13 @@ migrate:
 	$(DOCKER_WO_PORTS) bash -c "python manage.py makemigrations \
 		&& python manage.py migrate"
 
-create_adminuser:
-	$(DOCKER_W_PORTS) python manage.py create_adminuser
+django-create-adminuser:
+	$(DOCKER_WO_PORTS) python manage.py create_adminuser
 
 collectstatic:
-	$(DOCKER_W_PORTS) python manage.py collectstatic --noinput
+	$(DOCKER_WO_PORTS) python manage.py collectstatic --noinput
 
-runserver:
+django-runserver:
 	$(DOCKER_W_PORTS) python manage.py runserver 0.0.0.0:8000
 
 django-shell:
@@ -31,3 +33,14 @@ django-shell:
 
 django-urls:
 	$(DOCKER_WO_PORTS) python manage.py show_urls
+
+pytest-querycount:
+	$(DOCKER_WO_PORTS) pytest --querycount 0
+
+virtualenv:
+	virtualenv --python=`which python3` $(VIRTUALENV_NAME)
+	$(VIRTUALENV_NAME)/bin/pip install -r requirements.txt
+	$(VIRTUALENV_NAME)/bin/pip install -r requirements-dev.txt
+	$(VIRTUALENV_NAME)/bin/pip install -r requirements-test.txt
+	$(VIRTUALENV_NAME)/bin/pip install -e .
+	@echo "Activate virtualenv:\n. $(VIRTUALENV_NAME)/bin/activate
